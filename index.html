@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Langmark</title>
+
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+		<meta name="viewport" content="width=1024" />
+    </head>
+    <body>
+		<div id="main">
+			<header class="item active" id="header">
+				<div class="container">
+					<h1 class="title">langmark</h1>
+                    <div class="until-loading"><img src="img/loading_spinner.gif" /></div>
+                    <div class="wait-loaded">
+                        <h2>Averages</h2>
+                        <div class="graph">
+                            <span id="averages_full" data-status="show">Hide slow languages</span>
+                            <div id="average_graph" width="100%" height="400"></div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <section class="item wait-loaded">
+                <div class="container">
+                    <h2 class="title">Test Suite</h2>
+                    <div id="test_suites"></div>
+                </div>
+            </section>
+            <section class="item wait-loaded">
+                <div class="container">
+                    <h2 class="title">Details</h2>
+                    <div id="details"></div>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>
+
+<link rel="stylesheet" href="css/reset.css" />
+<link rel="stylesheet" href="css/style.css" />
+<script src="js/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script src="js/script.js"></script>
