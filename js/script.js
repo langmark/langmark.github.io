@@ -3,6 +3,10 @@ RESULT_URL = 'https://raw.githubusercontent.com/langmark/langmark/pushes/results
 ready = function() {
     var pool = {};
 
+    function cmp_chart(a,b) {
+        return a[1] - b[1];
+    }
+
     function load_data() {
         $.ajax({
             url: RESULT_URL,
@@ -96,6 +100,8 @@ ready = function() {
                 if (pool.averages[lang].time <= average)
                     dataFast.push([ lang, pool.averages[lang].time ]);
             }
+            dataFast.sort(cmp_chart);
+            dataFull.sort(cmp_chart);
 
             viewAverageFull = new google.visualization.DataView(google.visualization.arrayToDataTable(dataFull));
             viewAverageFast = new google.visualization.DataView(google.visualization.arrayToDataTable(dataFast));
@@ -153,6 +159,8 @@ ready = function() {
                 if (data[lang] <= average)
                     dataFast.push([ lang, data[lang] ]);
             }
+            dataFast.sort(cmp_chart);
+            dataFull.sort(cmp_chart);
 
             viewAverageFull = new google.visualization.DataView(google.visualization.arrayToDataTable(dataFull));
             viewAverageFast = new google.visualization.DataView(google.visualization.arrayToDataTable(dataFast));
