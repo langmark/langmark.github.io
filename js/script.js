@@ -41,6 +41,7 @@ ready = function() {
 
         for (var test in data) {
             for (var lang in data[test]) {
+                if (data[test][lang].length == 0) continue;
                 if (pool.per_lang[lang] == undefined) pool.per_lang[lang] = {};
                 if (pool.per_test[test] == undefined) pool.per_test[test] = {};
                 if (pool.averages[lang] == undefined) pool.averages[lang] = { sum: 0, count: 0 };
