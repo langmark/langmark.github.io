@@ -231,8 +231,11 @@ ready = function() {
     function append_details_row(comp, data, table) {
         var row = $('<tr>');
         row.append('<td>'+comp);
-        for (var test in pool.per_test)
-            row.append('<td>'+data[test]);
+        for (var test in pool.per_test) {
+            var time = data[test];
+            if (time == undefined) time = "";
+            row.append('<td>'+time);
+        }
         
         table.append(row);
     }
