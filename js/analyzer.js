@@ -31,7 +31,8 @@
         },
         tooltip: {
           isHtml: true
-        }
+        },
+        logScale: false
       };
       this.views = [];
       for (index in data) {
@@ -41,22 +42,39 @@
     }
 
     Hisogram.prototype.setContainer = function(container) {
-      var button, chartDiv;
+      var chartDiv, log, slow;
       this.currentView = 0;
       chartDiv = $('<div>');
-      button = $('<button>').addClass('btn btn-success btn-xs').text('Hide slow');
-      button.click((function(_this) {
+      slow = $('<button>').addClass('btn btn-success btn-xs').text('Hide slow');
+      slow.click((function(_this) {
         return function() {
+          slow.toggleClass('btn-success').toggleClass('btn-primary');
           if (_this.currentView === 0) {
-            button.text('Show slow');
+            slow.text('Show slow');
             return _this.draw(1);
           } else {
-            button.text('Hide slow');
+            slow.text('Hide slow');
             return _this.draw(0);
           }
         };
       })(this));
-      container.append(button);
+      log = $('<button>').addClass('btn btn-success btn-xs').text('Log scale');
+      log.click((function(_this) {
+        return function() {
+          log.toggleClass('btn-success').toggleClass('btn-primary');
+          if (_this.options.logScale) {
+            log.text('Linear scale');
+            _this.options.logScale = 0;
+            return _this.draw(_this.currentView);
+          } else {
+            log.text('Log scale');
+            _this.options.logScale = 1;
+            return _this.draw(_this.currentView);
+          }
+        };
+      })(this));
+      container.append(slow);
+      container.append(log);
       container.append(chartDiv);
       return this.chart = new google.visualization.ColumnChart(chartDiv[0]);
     };
@@ -408,8 +426,6 @@
       })(this));
       return $('<h2>').append(a);
     };
-
-    Analyzer.prototype.humanizeString = function(str) {};
 
     return Analyzer;
 

@@ -14,6 +14,7 @@ class @Hisogram
       backgroundColor: "#eee"
       animation: { duration:500 }
       tooltip: { isHtml: true }
+      logScale: false
 
     @views = []
     for index,view of data
@@ -24,16 +25,31 @@ class @Hisogram
   setContainer: (container)->
     @currentView = 0
     chartDiv = $('<div>')
-    button = $('<button>').addClass('btn btn-success btn-xs').text('Hide slow')
-    button.click =>
+
+    slow = $('<button>').addClass('btn btn-success btn-xs').text('Hide slow')
+    slow.click =>
+      slow.toggleClass('btn-success').toggleClass('btn-primary')
       if @currentView == 0
-        button.text('Show slow')
+        slow.text('Show slow')
         @draw(1)
       else
-        button.text('Hide slow')
+        slow.text('Hide slow')
         @draw(0)
 
-    container.append(button)
+    log = $('<button>').addClass('btn btn-success btn-xs').text('Log scale')
+    log.click =>
+      log.toggleClass('btn-success').toggleClass('btn-primary')
+      if @options.logScale
+        log.text('Linear scale')
+        @options.logScale = 0
+        @draw(@currentView)
+      else
+        log.text('Log scale')
+        @options.logScale = 1
+        @draw(@currentView)
+
+    container.append(slow)
+    container.append(log)
     container.append(chartDiv)
     @chart = new google.visualization.ColumnChart(chartDiv[0])
 
@@ -276,5 +292,3 @@ class @Analyzer
           $('#modal').modal()
 
     return $('<h2>').append(a)
-
-  humanizeString: (str)->
