@@ -55,14 +55,7 @@
         });
       };
       return parseDate = function(date) {
-        var day, hour, min, month, sec, year;
-        year = date.slice(0, 4);
-        month = date.slice(4, 6);
-        day = date.slice(6, 8);
-        hour = date.slice(8, 10);
-        min = date.slice(10, 12);
-        sec = date.slice(12, 14);
-        return day + "/" + month + "/" + year + " at " + hour + ":" + min + ":" + sec;
+        return date.slice(6, 8) + "/" + date.slice(4, 6) + "/" + date.slice(0, 4) + " at " + date.slice(8, 10) + ":" + date.slice(10, 12) + ":" + date.slice(12, 14);
       };
     }
   ]);

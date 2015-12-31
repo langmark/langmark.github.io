@@ -156,7 +156,7 @@
     Test.prototype.getHistogram = function() {
       var data;
       data = [this.getChartData(false), this.getChartData(true)];
-      return new Hisogram(data, '');
+      return new Hisogram(data);
     };
 
     Test.prototype.getColsNumber = function() {
@@ -202,13 +202,13 @@
       data = data.sort(function(a, b) {
         var count1, count2, k, l, ref2, ref3, sum1, sum2;
         sum1 = count1 = sum2 = count2 = 0;
-        for (i = k = 1, ref2 = a.length - 1; 1 <= ref2 ? k <= ref2 : k >= ref2; i = 1 <= ref2 ? ++k : --k) {
+        for (i = k = 1, ref2 = a.length; 1 <= ref2 ? k < ref2 : k > ref2; i = 1 <= ref2 ? ++k : --k) {
           if (a[i][0]) {
             sum1 += a[i][0];
             count1++;
           }
         }
-        for (i = l = 1, ref3 = b.length - 1; 1 <= ref3 ? l <= ref3 : l >= ref3; i = 1 <= ref3 ? ++l : --l) {
+        for (i = l = 1, ref3 = b.length; 1 <= ref3 ? l < ref3 : l > ref3; i = 1 <= ref3 ? ++l : --l) {
           if (b[i][0]) {
             sum2 += b[i][0];
             count2++;
@@ -386,7 +386,7 @@
 
     Analyzer.prototype.getTitle = function(name) {
       var a;
-      a = $('<a>');
+      a = $('<a href="#">');
       a.text(name);
       a.click((function(_this) {
         return function() {

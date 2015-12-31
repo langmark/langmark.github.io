@@ -50,13 +50,7 @@ app.controller 'MainController', ['$scope', '$http', ($scope, $http)->
       $scope.analyzers[index].draw()
       $scope.currentAnalyzer = $scope.analyzers[index]
 
+  # convert the filename YYYYMMDDhhmmss.json to DD/MM/YYYY at hh:mm:ss
   parseDate = (date)->
-    year = date.slice(0, 4)
-    month = date.slice(4, 6)
-    day = date.slice(6, 8)
-    hour = date.slice(8, 10)
-    min = date.slice(10, 12)
-    sec = date.slice(12, 14)
-
-    return "#{day}/#{month}/#{year} at #{hour}:#{min}:#{sec}"
+    return "#{date[6..7]}/#{date[4..5]}/#{date[0..3]} at #{date[8..9]}:#{date[10..11]}:#{date[12..13]}"
 ]

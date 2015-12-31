@@ -51,12 +51,14 @@ class @Lang
 
   constructor: (@times)->
 
+  # Get the minimum time of the test
   getMin: ->
     best = Infinity
     for compiler in @times
       best = Math.min(best, compiler.time)
     return best
 
+  # Get the average time of the test
   getAverage: ->
     sum = 0
     for compiler in @times
@@ -100,6 +102,7 @@ class @Test
 
     @chart = @getHistogram()
 
+  # Get the average time of the test
   getAverage: ->
     sum = 0
     count = 0
@@ -112,7 +115,7 @@ class @Test
   # the second with the languages faster than the average
   getHistogram: ->
     data = [ @getChartData(false), @getChartData(true) ]
-    return new Hisogram(data, '')
+    return new Hisogram(data)
 
   # Return the number of data columns
   getColsNumber: ->
@@ -128,6 +131,7 @@ class @Test
 
     cols = @getColsNumber()
 
+    # add the columns to the DataTable
     dataTable.addColumn('string', 'Language')
     for i in [0...cols]
       dataTable.addColumn('number', '')
@@ -142,11 +146,11 @@ class @Test
     # sort the data by the average time
     data = data.sort (a,b)->
       sum1 = count1 = sum2 = count2 = 0
-      for i in [1..a.length-1]
+      for i in [1...a.length]
         if a[i][0]
           sum1 += a[i][0]
           count1++
-      for i in [1..b.length-1]
+      for i in [1...b.length]
         if b[i][0]
           sum2 += b[i][0]
           count2++
@@ -255,8 +259,9 @@ class @Analyzer
     return Object.keys(res).sort()
 
   getTitle: (name)->
-    a = $('<a>')
+    a = $('<a href="#">')
     a.text(name)
+
     a.click =>
       $.ajax
         url: "https://raw.githubusercontent.com/langmark/langmark/master/#{name}/README.md"
