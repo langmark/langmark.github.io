@@ -19,7 +19,7 @@
         width: '100%',
         height: 400,
         chartArea: {
-          width: '90%',
+          width: '85%',
           height: '80%'
         },
         legend: {
@@ -63,11 +63,11 @@
         return function() {
           log.toggleClass('btn-success').toggleClass('btn-primary');
           if (_this.options.logScale) {
-            log.text('Linear scale');
+            log.text('Log scale');
             _this.options.logScale = 0;
             return _this.draw(_this.currentView);
           } else {
-            log.text('Log scale');
+            log.text('Linear scale');
             _this.options.logScale = 1;
             return _this.draw(_this.currentView);
           }
@@ -120,16 +120,19 @@
       return sum / this.times.length;
     };
 
-    Lang.prototype.getRow = function(name, cols) {
-      var i, j, ref, row, shift, tooltip;
-      shift = ((cols - this.times.length) / 2) | 0;
+    Lang.prototype.getRow = function(name, cols, average) {
+      var i, j, ref, row, shift, times, tooltip;
+      times = this.times.filter(function(time) {
+        return time.time < average;
+      });
+      shift = ((cols - times.length) / 2) | 0;
       row = [name];
       for (i = j = 0, ref = cols; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
-        if (i < shift || i >= shift + this.times.length) {
+        if (i < shift || i >= shift + times.length) {
           row.push([0, '']);
         } else {
-          tooltip = "<div class='column-tooltip'> <h1>" + this.times[i - shift].name + "</h1> <dl> <dt>Version</dt> <dd>" + (this.times[i - shift].version.replace("\n", "<br>")) + "</dd> <dt>Time</dt> <dd>" + (this.times[i - shift].time.toFixed(3)) + "</dd> </dl>";
-          row.push([this.times[i - shift].time, tooltip]);
+          tooltip = "<div class='column-tooltip'> <h1>" + times[i - shift].name + "</h1> <dl> <dt>Version</dt> <dd>" + (times[i - shift].version.replace("\n", "<br>")) + "</dd> <dt>Time</dt> <dd>" + (times[i - shift].time.toFixed(3)) + "</dd> </dl>";
+          row.push([times[i - shift].time * 1000 | 0, tooltip]);
         }
       }
       return row;
@@ -206,33 +209,29 @@
           }
         });
       }
-      if (hideSlow) {
-        average = this.getAverage();
-      }
+      average = hideSlow ? this.getAverage() : Infinity;
       data = [];
       ref1 = this.langs;
       for (lang in ref1) {
         times = ref1[lang];
-        if (hideSlow === false || times.getAverage() < average) {
-          data.push(times.getRow(lang, cols));
+        if (hideSlow === false || times.getMin() < average) {
+          data.push(times.getRow(lang, cols, average));
         }
       }
       data = data.sort(function(a, b) {
-        var count1, count2, k, l, ref2, ref3, sum1, sum2;
-        sum1 = count1 = sum2 = count2 = 0;
+        var k, l, min1, min2, ref2, ref3;
+        min1 = min2 = Infinity;
         for (i = k = 1, ref2 = a.length; 1 <= ref2 ? k < ref2 : k > ref2; i = 1 <= ref2 ? ++k : --k) {
           if (a[i][0]) {
-            sum1 += a[i][0];
-            count1++;
+            min1 = Math.min(min1, a[i][0]);
           }
         }
         for (i = l = 1, ref3 = b.length; 1 <= ref3 ? l < ref3 : l > ref3; i = 1 <= ref3 ? ++l : --l) {
           if (b[i][0]) {
-            sum2 += b[i][0];
-            count2++;
+            min2 = Math.min(min2, b[i][0]);
           }
         }
-        return sum1 / count1 - sum2 / count2;
+        return min1 - min2;
       });
       parsedData = [];
       for (_ in data) {

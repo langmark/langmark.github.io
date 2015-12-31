@@ -9,7 +9,7 @@ class @Hisogram
       title: title
       width: '100%'
       height: 400
-      chartArea: { width: '90%', height: '80%' }
+      chartArea: { width: '85%', height: '80%' }
       legend: { position: 'none' }
       backgroundColor: "#eee"
       animation: { duration:500 }
@@ -40,11 +40,11 @@ class @Hisogram
     log.click =>
       log.toggleClass('btn-success').toggleClass('btn-primary')
       if @options.logScale
-        log.text('Linear scale')
+        log.text('Log scale')
         @options.logScale = 0
         @draw(@currentView)
       else
-        log.text('Log scale')
+        log.text('Linear scale')
         @options.logScale = 1
         @draw(@currentView)
 
@@ -53,8 +53,7 @@ class @Hisogram
     container.append(chartDiv)
     @chart = new google.visualization.ColumnChart(chartDiv[0])
 
-  # Draw the chart in a container (DOM object). view_idx is the index of the
-  # data to draw
+  # view_idx is the index of the data to draw
   draw: (view_idx = 0)->
     @chart.draw(@views[view_idx], @options)
     @currentView = view_idx
@@ -83,25 +82,29 @@ class @Lang
 
   # Return a row valid for the DataTable. name is the language name, cols is
   # the number of data columns in the chart
-  getRow: (name, cols)->
+  getRow: (name, cols, average)->
+    # filter the times above the averages
+    times = @times.filter (time)->
+      time.time < average
+
     # shift the columns to right to center them
-    shift = ((cols - @times.length) / 2) | 0
+    shift = ((cols - times.length) / 2) | 0
     row = [name]
     for i in [0...cols]
-      if i < shift || i >= shift + @times.length
+      if i < shift || i >= shift + times.length
         row.push [ 0, '']  # empty columns (aka hidden)
       else
         tooltip = "
           <div class='column-tooltip'>
-            <h1>#{@times[i-shift].name}</h1>
+            <h1>#{times[i-shift].name}</h1>
             <dl>
               <dt>Version</dt>
-              <dd>#{@times[i-shift].version.replace("\n", "<br>")}</dd>
+              <dd>#{times[i-shift].version.replace("\n", "<br>")}</dd>
               <dt>Time</dt>
-              <dd>#{@times[i-shift].time.toFixed(3)}</dd>
+              <dd>#{times[i-shift].time.toFixed(3)}</dd>
             </dl>
         "
-        row.push [ @times[i-shift].time, tooltip ]
+        row.push [ times[i-shift].time*1000|0, tooltip ]
     return row
 
 
@@ -153,24 +156,20 @@ class @Test
       dataTable.addColumn('number', '')
       dataTable.addColumn { type: 'string', role: 'tooltip', p: { html: true } }
 
-    average = @getAverage() if hideSlow
+    average = if hideSlow then @getAverage() else Infinity
     data = []
     for lang,times of @langs
-      if hideSlow == false || times.getAverage() < average
-        data.push times.getRow(lang, cols)
+      if hideSlow == false || times.getMin() < average
+        data.push times.getRow(lang, cols, average)
 
     # sort the data by the average time
     data = data.sort (a,b)->
-      sum1 = count1 = sum2 = count2 = 0
+      min1 = min2 = Infinity
       for i in [1...a.length]
-        if a[i][0]
-          sum1 += a[i][0]
-          count1++
+        min1 = Math.min(min1, a[i][0]) if a[i][0]
       for i in [1...b.length]
-        if b[i][0]
-          sum2 += b[i][0]
-          count2++
-      return sum1/count1 - sum2/count2
+        min2 = Math.min(min2, b[i][0]) if b[i][0]
+      return min1 - min2
 
     # remove nested array
     parsedData = []
