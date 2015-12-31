@@ -15,11 +15,12 @@
 
   app.controller('MainController', [
     '$scope', '$http', function($scope, $http) {
-      var _, fn, parseDate, source;
+      var _, fn, parseDate, scrollEnabled, source;
       $scope.analyzers = {};
       $scope.currentAnalyzer = null;
       $scope.currentFile = null;
       $scope.files = [];
+      scrollEnabled = true;
       fn = function(source) {
         return $http.get(source.results).then(function(response) {
           var file, i, last, len, results;
@@ -50,8 +51,16 @@
           index = $scope.currentFile.file;
         }
         return $scope.analyzers[index].loadData($http, true, function() {
+          var hash;
           $scope.analyzers[index].draw();
-          return $scope.currentAnalyzer = $scope.analyzers[index];
+          $scope.currentAnalyzer = $scope.analyzers[index];
+          hash = window.location.hash;
+          if (hash && scrollEnabled) {
+            $('body').animate({
+              scrollTop: $(hash).offset().top
+            });
+            return scrollEnabled = false;
+          }
         });
       };
       return parseDate = function(date) {

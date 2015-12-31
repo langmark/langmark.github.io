@@ -239,7 +239,7 @@ class @Analyzer
     for _,test of Object.keys(@tests).sort()
       langs = @tests[test]
 
-      div = $("<div>")
+      div = $("<div>").attr('id', test)
       div.append(@getTitle(test))
       $('#container').append(div)
       langs.chart.setContainer(div)

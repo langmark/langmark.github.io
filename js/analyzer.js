@@ -350,7 +350,7 @@
       for (_ in ref) {
         test = ref[_];
         langs = this.tests[test];
-        div = $("<div>");
+        div = $("<div>").attr('id', test);
         div.append(this.getTitle(test));
         $('#container').append(div);
         langs.chart.setContainer(div);

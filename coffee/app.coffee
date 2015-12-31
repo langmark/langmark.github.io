@@ -21,6 +21,7 @@ app.controller 'MainController', ['$scope', '$http', ($scope, $http)->
   $scope.currentAnalyzer = null
   $scope.currentFile = null
   $scope.files = []
+  scrollEnabled = true
 
   for _,source of dataSources
     # do (source) is helpful because source variable needs to not be hoisted because
@@ -49,6 +50,12 @@ app.controller 'MainController', ['$scope', '$http', ($scope, $http)->
     $scope.analyzers[index].loadData $http, true, ->
       $scope.analyzers[index].draw()
       $scope.currentAnalyzer = $scope.analyzers[index]
+      hash = window.location.hash
+      # scroll to the requested id in url
+      if hash && scrollEnabled
+        $('body').animate
+          scrollTop: $(hash).offset().top
+        scrollEnabled = false
 
   # convert the filename YYYYMMDDhhmmss.json to DD/MM/YYYY at hh:mm:ss
   parseDate = (date)->
