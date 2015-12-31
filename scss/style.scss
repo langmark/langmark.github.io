@@ -1,0 +1,15 @@
+.column-tooltip {
+  width: 300px;
+  margin: 20px;
+
+  h2 {
+    margin: 0;
+  }
+}
+
+table {
+  border-spacing: 10px;
+  td, th { width: 150px; }
+  td:first-of-type, th:first-of-type { width: 500px !important; }
+  td:nth-child(2), th:nth-child(2) { width: auto; }
+}
