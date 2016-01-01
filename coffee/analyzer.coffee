@@ -62,7 +62,7 @@ class @Hisogram
 
 
 class @Lang
-  times: []
+  times: null
 
   constructor: (@times)->
 
@@ -111,11 +111,12 @@ class @Lang
 
 
 class @Test
-  name: ''
-  langs: {}
+  name: null
+  langs: null
   chart: null
 
   constructor: (@name, langs)->
+    @langs = {}
     for lang,times of langs
       @langs[lang] = new Lang(times) if times.length > 0
 

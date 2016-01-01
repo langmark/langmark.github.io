@@ -92,7 +92,7 @@
   })();
 
   this.Lang = (function() {
-    Lang.prototype.times = [];
+    Lang.prototype.times = null;
 
     function Lang(times1) {
       this.times = times1;
@@ -143,15 +143,16 @@
   })();
 
   this.Test = (function() {
-    Test.prototype.name = '';
+    Test.prototype.name = null;
 
-    Test.prototype.langs = {};
+    Test.prototype.langs = null;
 
     Test.prototype.chart = null;
 
     function Test(name1, langs) {
       var lang, times;
       this.name = name1;
+      this.langs = {};
       for (lang in langs) {
         times = langs[lang];
         if (times.length > 0) {
